@@ -1,0 +1,24 @@
+info:
+  name: Register User
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:9001/api/users/register
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Prosper Obi",
+        "email": "prosper@test.com",
+        "password": "123456",
+        "role": "client"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,4 +1,4 @@
-require('dotenv').config({ path: '../.env' });
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
@@ -27,12 +27,12 @@ app.use(session({
 }));
 
 // ------------------------- Routes --------------------------------------
-// app.use('/api/users', require('./routes/users'));
-// app.use('/api/bookings', require('./routes/bookings'));
-// app.use('/api/quotes', require('./routes/quotes'));
-// app.use('/api/labour', require('./routes/labour'));
-// app.use('/api/invoices', require('./routes/invoices'));
-// app.use('/api/ratings', require('./routes/ratings'));
+app.use('/api/users', require('./routes/users'));
+app.use('/api/bookings', require('./routes/bookings'));
+app.use('/api/quotes', require('./routes/quotes'));
+app.use('/api/labour', require('./routes/labour'));
+app.use('/api/invoices', require('./routes/invoices'));
+app.use('/api/ratings', require('./routes/ratings'));
 
 // Optional: a simple root route to confirm API is running
 app.get('/', (req, res) => {
