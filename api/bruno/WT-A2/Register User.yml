@@ -4,17 +4,11 @@ info:
   seq: 1
 
 http:
-  method: POST
-  url: http://localhost:9001/api/users/register
+  method: PUT
+  url: http://localhost:9001/api/quotes/69dedc25215121b71382472f/accept
   body:
     type: json
-    data: |-
-      {
-        "name": "Prosper Obi",
-        "email": "prosper@test.com",
-        "password": "123456",
-        "role": "client"
-      }
+    data: '{"email": "client@test.com", "password": "123456"}'
   auth: inherit
 
 settings:

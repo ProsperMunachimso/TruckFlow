@@ -4,24 +4,26 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const { protect } = require('../middleware/auth');
 
-// Helper: generate JWT and set cookie
 const generateToken = (res, userId) => {
+  // Create a token with the user's ID, we made it to expire after 7 days
   const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
+  
+  // Set the cookie with various security options
   res.cookie('token', token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: 7 * 24 * 60 * 60 * 1000
+    httpOnly: true,          
+    secure: process.env.NODE_ENV === 'production', // Only send over HTTPS in production
+    sameSite: 'strict',       
+    maxAge: 7 * 24 * 60 * 60 * 1000 // Calculates the 7 days we set to milliseconds
   });
   return token;
 };
 
-// @route POST /api/users/register
-// @desc Register a new user (client, transporter, or labourer)
+// Register a new user (client, transporter, or labourer)
+// Different roles can sign up - each role may have different required fields
 router.post('/register', async (req, res) => {
   const { name, email, password, phone, address, role, vehicleDetails, labourerDetails } = req.body;
 
-  // Server-side validation
+  // Server-side validation 
   if (!name || !email || !password || !role) {
     return res.status(400).json({ message: 'Please fill all required fields' });
   }
@@ -29,11 +31,13 @@ router.post('/register', async (req, res) => {
     return res.status(400).json({ message: 'Password must be at least 6 characters' });
   }
 
+  // Check if a user with this email already exists (unique constraint in schema)
   const userExists = await User.findOne({ email });
   if (userExists) {
     return res.status(400).json({ message: 'User already exists' });
   }
 
+  // Create the user object - conditionally include role-specific details
   const user = await User.create({
     name, email, password, phone, address, role,
     vehicleDetails: role === 'transporter' ? vehicleDetails : undefined,
@@ -41,7 +45,9 @@ router.post('/register', async (req, res) => {
   });
 
   if (user) {
+    // Generate JWT and set cookie so user is logged in immediately after registration
     generateToken(res, user._id);
+    // Return user info excluding sensitive data like password
     res.status(201).json({
       _id: user._id,
       name: user.name,
@@ -53,10 +59,14 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// @route POST /api/users/login
+// Authenticate user and set token cookie
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
+  
+  // Find user by email
   const user = await User.findOne({ email });
+  
+  // Check if user exists and password matches
   if (user && (await user.matchPassword(password))) {
     generateToken(res, user._id);
     res.json({
@@ -70,40 +80,45 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// @route POST /api/users/logout
+// Clear the token cookie to log the user out
 router.post('/logout', (req, res) => {
+  // Overwrite the cookie with an empty value that expires immediately
   res.cookie('token', '', { httpOnly: true, expires: new Date(0) });
   res.status(200).json({ message: 'Logged out successfully' });
 });
 
-// @route GET /api/users/profile
-// @desc Get logged-in user's profile (protected)
+// Get logged-in user's profile protected
+// The 'protect' middleware ensures only authenticated users can access this
 router.get('/profile', protect, async (req, res) => {
   const user = await User.findById(req.user._id).select('-password');
   res.json(user);
 });
 
-// @route PUT /api/users/profile
-// @desc Update profile
+// Update profile (name, phone, address, password, and role-specific details)
 router.put('/profile', protect, async (req, res) => {
   const user = await User.findById(req.user._id);
   if (user) {
+    // Update basic fields if provided in the request body
     user.name = req.body.name || user.name;
     user.phone = req.body.phone || user.phone;
     user.address = req.body.address || user.address;
+    
+    // If the user wants to change password, validate length before saving
     if (req.body.password) {
       if (req.body.password.length < 6) {
         return res.status(400).json({ message: 'Password too short' });
       }
-      user.password = req.body.password;
+      user.password = req.body.password; 
     }
-    // Update role-specific fields if needed
+    
+    // Update role-specific fields only if the user has that role
     if (user.role === 'transporter' && req.body.vehicleDetails) {
       user.vehicleDetails = req.body.vehicleDetails;
     }
     if (user.role === 'labourer' && req.body.labourerDetails) {
       user.labourerDetails = req.body.labourerDetails;
     }
+    
     await user.save();
     res.json({ message: 'Profile updated' });
   } else {
