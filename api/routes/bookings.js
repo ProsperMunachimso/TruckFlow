@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
+const mongoose = require('mongoose');
 const { protect, authorize } = require('../middleware/auth');
 
 // Create a booking (client only)
@@ -59,16 +60,46 @@ router.get('/', protect, async (req, res) => {
 });
 
 // Get single booking by ID
+// Commented out this part to add a session tracking
+// router.get('/:id', protect, async (req, res) => {
+//   // Fetch booking and include client's name and email
+//   const booking = await Booking.findById(req.params.id).populate('client', 'name email');
+//   if (!booking) return res.status(404).json({ message: 'Booking not found' });
+  
+//   // Authorization: clients can only see their own bookings, transporters can see any
+//   // But we need to prevent a client from viewing another client's booking
+//   if (req.user.role === 'client' && booking.client._id.toString() !== req.user._id.toString()) {
+//     return res.status(403).json({ message: 'Not authorized' });
+//   }
+//   res.json(booking);
+// }); 
+
 router.get('/:id', protect, async (req, res) => {
-  // Fetch booking and include client's name and email
+  // Validate ObjectId
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(400).json({ message: 'Invalid booking ID format' });
+  }
   const booking = await Booking.findById(req.params.id).populate('client', 'name email');
   if (!booking) return res.status(404).json({ message: 'Booking not found' });
   
-  // Authorization: clients can only see their own bookings, transporters can see any
-  // But we need to prevent a client from viewing another client's booking
+  // Authorization check
   if (req.user.role === 'client' && booking.client._id.toString() !== req.user._id.toString()) {
     return res.status(403).json({ message: 'Not authorized' });
   }
+  // Transporters can view any pending booking? Adjust as needed – for simplicity, allow any authenticated user to view any booking for session demo.
+  
+  // --- SESSION TRACKING: store last 5 viewed booking IDs ---
+  if (!req.session.recentBookings) {
+    req.session.recentBookings = [];
+  }
+  // Add current booking ID to the front, remove duplicates
+  const bookingIdStr = req.params.id;
+  req.session.recentBookings = req.session.recentBookings.filter(id => id !== bookingIdStr);
+  req.session.recentBookings.unshift(bookingIdStr);
+  // Keep only last 5
+  if (req.session.recentBookings.length > 5) req.session.recentBookings.pop();
+  req.session.save(); // explicitly save session (optional, but good practice)
+  
   res.json(booking);
 });
 

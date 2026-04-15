@@ -68,9 +68,9 @@ See table above.
 Live API URL: `https://truckflow.onrender.com`
 
 ## Division of Labour
-- [Name 1]: User authentication, booking CRUD, database models (40%)
-- [Name 2]: Quotes, labour requests, invoice generation (30%)
-- [Name 3]: Ratings, middleware, deployment, README (30%)
+- Prosper: User authentication, booking CRUD, database models (40%)
+- Vitor: Quotes, labour requests, invoice generation (30%)
+- Chibuike: Ratings, middleware, deployment, README (30%)
 
 ## Setup Instructions (Local)
 1. Run `npm install`
@@ -78,4 +78,14 @@ Live API URL: `https://truckflow.onrender.com`
 3. Run `npm run dev`
 4. Use Bruno/Postman with base URL `http://localhost:9001`
 
-## Environment Variables
+## Changes from Assignment 1 (Project Proposal)
+
+The following changes have been made from the original plan described in Assignment 1:
+
+1. **Real‑time GPS tracking** – Not implemented in this server‑side iteration. The proposal included live truck tracking, but this feature was deferred to a future frontend/WebSocket implementation due to time constraints and scope of Assignment 2.
+
+2. **Labourer matching algorithm** – Simplified from “intelligent matching based on location/skills” to a manual acceptance system where labourers directly assign themselves to pending requests (`PUT /api/labour/:id/assign`). This still satisfies the core requirement of connecting clients with labourers.
+
+3. **Payment gateway integration** – Stripe/PayPal not implemented; payment is simulated by updating invoice status to “paid”. This was simplified for the backend scope.
+
+All other core functionalities (user auth, booking CRUD, quotes, invoices, ratings) remain as originally proposed.

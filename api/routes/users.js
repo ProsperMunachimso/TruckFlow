@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const { protect } = require('../middleware/auth');
+// const Booking = require('../models/Booking');
 
 const generateToken = (res, userId) => {
   // Create a token with the user's ID, we made it to expire after 7 days
@@ -94,6 +95,21 @@ router.get('/profile', protect, async (req, res) => {
   res.json(user);
 });
 
+// Get recently viewed bookings (stored in server‑side session)
+// This demonstrates active use of express‑session, separate from JWT cookie
+router.get('/recent', protect, async (req, res) => {
+  if (!req.session.recentBookings || req.session.recentBookings.length === 0) {
+    return res.json({ recentBookings: [] });
+  }
+  // Fetch the actual booking documents from DB
+  const bookings = await Booking.find({
+    '_id': { $in: req.session.recentBookings }
+  }).populate('client', 'name email');
+  // Preserve order from session (most recent first)
+  const ordered = req.session.recentBookings.map(id => bookings.find(b => b._id.toString() === id)).filter(b => b);
+  res.json({ recentBookings: ordered });
+});
+
 // Update profile (name, phone, address, password, and role-specific details)
 router.put('/profile', protect, async (req, res) => {
   const user = await User.findById(req.user._id);
@@ -124,6 +140,30 @@ router.put('/profile', protect, async (req, res) => {
   } else {
     res.status(404).json({ message: 'User not found' });
   }
+});
+
+// Delete the currently logged-in user's own account
+// Requires password confirmation for security
+router.delete('/me', protect, async (req, res) => {
+  const user = await User.findById(req.user._id);
+  if (!user) return res.status(404).json({ message: 'User not found' });
+
+  // Confirm password
+  const { password } = req.body;
+  if (!password || !(await user.matchPassword(password))) {
+    return res.status(401).json({ message: 'Invalid password – account not deleted' });
+  }
+
+  // Optionally delete all bookings created by this user
+  // await Booking.deleteMany({ client: user._id });
+
+  await User.deleteOne({ _id: user._id });
+
+  // Clear session and cookie
+  req.session.destroy(() => {});
+  res.clearCookie('token');
+
+  res.json({ message: 'Account deleted successfully' });
 });
 
 module.exports = router;
