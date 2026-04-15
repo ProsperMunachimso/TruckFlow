@@ -37,6 +37,12 @@ TruckFlow is a web-based logistics platform that connects clients needing goods 
 ### Bookings (full CRUD)
 See table above.
 
+## Session Usage
+- The server uses `express-session` to store per‑user data.
+- When a user views a booking (`GET /api/bookings/:id`), the booking ID is stored in `req.session.recentBookings`.
+- The last **5** viewed bookings are kept and can be retrieved via `GET /api/users/recent`.
+- This demonstrates active use of server‑side sessions beyond simple cookie authentication.
+
 ### Quotes
 | Endpoint | Method | Description |
 |----------|--------|-------------|
@@ -77,6 +83,7 @@ Live API URL: `https://truckflow.onrender.com`
 2. Create `.env` file (see `.env.example`)
 3. Run `npm run dev`
 4. Use Bruno/Postman with base URL `http://localhost:9001`
+You can also use render to run it.
 
 ## Changes from Assignment 1 (Project Proposal)
 

@@ -4,11 +4,11 @@ info:
   seq: 1
 
 http:
-  method: PUT
-  url: http://localhost:9001/api/quotes/69dedc25215121b71382472f/accept
+  method: DELETE
+  url: http://localhost:9001/api/users/me
   body:
     type: json
-    data: '{"email": "client@test.com", "password": "123456"}'
+    data: ""
   auth: inherit
 
 settings:
