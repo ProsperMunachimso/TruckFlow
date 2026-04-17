@@ -1,0 +1,15 @@
+info:
+  name: Accept Labour
+  type: http
+  seq: 20
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/labour/69e2a6306f9fd78421c0ac03/assign"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

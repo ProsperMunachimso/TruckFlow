@@ -1,0 +1,19 @@
+info:
+  name: Update Booking
+  type: http
+  seq: 11
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/bookings/69e2a2396f9fd78421c0ac01"
+  body:
+    type: json
+    data: |
+      {"weightKg": 600, "specialInstructions": "Fragile"}
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

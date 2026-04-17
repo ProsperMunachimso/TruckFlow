@@ -1,0 +1,18 @@
+info:
+  name: Update User
+  type: http
+  seq: 6
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/users/profile"
+  body:
+    type: json
+    data: '{"phone": "0871234567", "address": "Dublin"}'
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

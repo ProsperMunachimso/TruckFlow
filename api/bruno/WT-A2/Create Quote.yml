@@ -1,0 +1,24 @@
+info:
+  name: Create Quote
+  type: http
+  seq: 14
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/quotes"
+  body:
+    type: json
+    data: |-
+      {
+        "bookingId": "69e2a2396f9fd78421c0ac01",
+        "amount": 350,
+        "estimatedDurationHours": 4,
+        "notes": "Available on short notice"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

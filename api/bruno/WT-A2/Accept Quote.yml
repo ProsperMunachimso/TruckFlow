@@ -1,0 +1,15 @@
+info:
+  name: Accept Quote
+  type: http
+  seq: 16
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/quotes/69e2a4aa6f9fd78421c0ac02/accept"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

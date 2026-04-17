@@ -2,3 +2,5 @@ name: local
 variables:
   - name: baseUrl
     value: http://localhost:9001
+  - name: render
+    value: https://truckflow.onrender.com

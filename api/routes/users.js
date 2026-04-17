@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const { protect } = require('../middleware/auth');
-// const Booking = require('../models/Booking');
+const Booking = require('../models/Booking');
 
 const generateToken = (res, userId) => {
   // Create a token with the user's ID, we made it to expire after 7 days

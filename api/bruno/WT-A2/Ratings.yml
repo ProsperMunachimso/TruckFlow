@@ -1,0 +1,24 @@
+info:
+  name: Ratings
+  type: http
+  seq: 24
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/ratings"
+  body:
+    type: json
+    data: |-
+      {
+        "bookingId": "69e2a2396f9fd78421c0ac01",
+        "toUserId": "69e2a0a46f9fd78421c0ac00",
+        "stars": 5,
+        "comment": "Great service!"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

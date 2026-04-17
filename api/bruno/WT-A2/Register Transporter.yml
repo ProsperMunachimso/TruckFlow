@@ -1,7 +1,7 @@
 info:
-  name: Register User
+  name: Register Transporter
   type: http
-  seq: 1
+  seq: 3
 
 http:
   method: POST
@@ -10,10 +10,11 @@ http:
     type: json
     data: |-
       {
-        "name": "Test Client",
-        "email": "client@test.com",
+        "name": "Test Transporter",
+        "email": "trans@test.com",
         "password": "123456",
-        "role": "client"
+        "role": "transporter",
+        "vehicleDetails": {"truckType": "Flatbed", "capacityKg": 5000, "licensePlate": "01-D-12345"}
       }
   auth: inherit
 

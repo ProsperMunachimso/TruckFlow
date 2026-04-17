@@ -1,0 +1,25 @@
+info:
+  name: Book
+  type: http
+  seq: 8
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/bookings"
+  body:
+    type: json
+    data: |-
+      {
+        "pickupLocation": "Limerick Warehouse",
+        "deliveryLocation": "Cork Depot",
+        "cargoType": "Electronics",
+        "weightKg": 1000,
+        "pickupDate": "2026-04-25T10:00:00Z"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

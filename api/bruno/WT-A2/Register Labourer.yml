@@ -1,0 +1,30 @@
+info:
+  name: Register Labourer
+  type: http
+  seq: 18
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/users/register"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Test Labourer2",
+        "email": "labourer2@test.com",
+        "password": "123456",
+        "phone": "0851234567",
+        "address": "Cork City",
+        "role": "labourer",
+        "labourerDetails": {
+          "skills": ["loading", "unloading", "warehouse"],
+          "hourlyRate": 15
+        }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

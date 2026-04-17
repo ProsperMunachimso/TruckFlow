@@ -1,0 +1,15 @@
+info:
+  name: Payment
+  type: http
+  seq: 23
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/api/invoices/69e2a9a46f9fd78421c0ac05/pay"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

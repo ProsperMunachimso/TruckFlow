@@ -1,19 +1,18 @@
 info:
-  name: Register User
+  name: Generate Invoice
   type: http
-  seq: 1
+  seq: 21
 
 http:
   method: POST
-  url: "{{baseUrl}}/api/users/register"
+  url: "{{baseUrl}}/api/invoices"
   body:
     type: json
     data: |-
       {
-        "name": "Test Client",
-        "email": "client@test.com",
-        "password": "123456",
-        "role": "client"
+        "bookingId": "69e2a2396f9fd78421c0ac01",
+        "totalAmount": 350,
+        "tax": 47.25
       }
   auth: inherit
 

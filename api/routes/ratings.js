@@ -10,13 +10,13 @@ router.post('/', protect, async (req, res) => {
   const { bookingId, toUserId, stars, comment } = req.body;
   
   // Find the booking to verify it exists and to check who is involved
-  const booking = await Booking.findById(bookingId);
+  const booking = await Booking.findById(bookingId).populate('selectedQuote');
   if (!booking) return res.status(404).json({ message: 'Booking not found' });
   
   // Determine if the logged-in user is part of this booking (either client or transporter)
   // We are thinking of adding Labourer ratings later, but we will keep it at client to transporter for now cause it is easier.
   const isClient = booking.client.toString() === req.user._id.toString();
-   const isTransporter = booking.selectedQuote && booking.selectedQuote.transporter.toString() === req.user._id.toString();
+   const isTransporter = booking.selectedQuote && booking.selectedQuote.transporter && booking.selectedQuote.transporter.toString() === req.user._id.toString();
   
   if (!isClient && !isTransporter) {
     return res.status(403).json({ message: 'Not authorized to rate this booking' });
