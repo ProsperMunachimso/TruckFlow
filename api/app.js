@@ -12,7 +12,10 @@ mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log('MongoDB connection error:', err));
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',   // your React dev server
+  credentials: true,
+}))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -36,6 +39,7 @@ app.use('/api/ratings', require('./routes/ratings'));   // User ratings after jo
 app.get('/', (req, res) => {
   res.json({ message: 'TruckFlow API is running' });
 });
+
 
 
 const PORT = process.env.PORT || 9002;
