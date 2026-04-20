@@ -1,14 +1,14 @@
 info:
-  name: Update User
+  name: Delete User
   type: http
-  seq: 6
+  seq: 26
 
 http:
-  method: PUT
-  url: "{{baseUrl}}/api/users/profile"
+  method: DELETE
+  url: "{{baseUrl}}/api/users/me"
   body:
     type: json
-    data: '{"phone": "0871234589", "address": "Cork"}'
+    data: '{"password": "123456"}'
   auth: inherit
 
 settings:

@@ -10,7 +10,7 @@ http:
     type: json
     data: |-
       {
-        "bookingId": "69e2a2396f9fd78421c0ac01",
+        "bookingId": "69decdc65b7c5f06d5b321ce",
         "amount": 350,
         "estimatedDurationHours": 4,
         "notes": "Available on short notice"
