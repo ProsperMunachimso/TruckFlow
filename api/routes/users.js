@@ -8,12 +8,13 @@ const Booking = require('../models/Booking');
 const generateToken = (res, userId) => {
   // Create a token with the user's ID, we made it to expire after 7 days
   const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
-  
+  const isProduction = process.env.NODE_ENV === 'production';
+
   // Set the cookie with various security options
   res.cookie('token', token, {
     httpOnly: true,          
     secure: process.env.NODE_ENV === 'production', // Only send over HTTPS in production
-    sameSite: 'strict',       
+    sameSite: isProduction ? 'none' : 'lax',     
     maxAge: 7 * 24 * 60 * 60 * 1000 // Calculates the 7 days we set to milliseconds
   });
   return token;
