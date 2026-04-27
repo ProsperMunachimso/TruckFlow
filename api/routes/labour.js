@@ -45,7 +45,7 @@ router.get('/', protect, async (req, res) => {
   } 
   else if (req.user.role === 'labourer') {
     // Labourers see only requests assigned to them
-    filter.labourer = req.user._id;
+     filter = { status: 'pending', labourer: null };
   }
   
   // Populate the booking field with pickup and delivery locations for context
