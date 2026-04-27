@@ -44,8 +44,15 @@ router.get('/', protect, async (req, res) => {
     filter.booking = { $in: bookings.map(b => b._id) };
   } 
   else if (req.user.role === 'labourer') {
-    // Labourers see only requests assigned to them
-     filter = { status: 'pending', labourer: null };
+    const filterType = req.query.filter;
+    if (filterType === 'available') {
+      filter = { status: 'pending', labourer: null };
+    } else if (filterType === 'assigned') {
+      filter = { labourer: req.user._id };
+    } else {
+      // default: return all labour requests (both pending and assigned) – optional
+      filter = { $or: [{ status: 'pending', labourer: null }, { labourer: req.user._id }] };
+    }
   }
   
   // Populate the booking field with pickup and delivery locations for context
