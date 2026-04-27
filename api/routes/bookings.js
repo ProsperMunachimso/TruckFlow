@@ -3,7 +3,7 @@ const router = express.Router();
 const Booking = require('../models/Booking');
 const mongoose = require('mongoose');
 const { protect, authorize } = require('../middleware/auth');
-
+const LabourRequest = require('../models/LabourRequest');
 // Create a booking (client only)
 // Only authenticated clients can create a booking
 router.post('/', protect, authorize('client'), async (req, res) => {
@@ -34,6 +34,22 @@ router.post('/', protect, authorize('client'), async (req, res) => {
     specialInstructions,
     status: 'pending' // New bookings always start as pending
   });
+
+  // --- Auto-create labour requests if needed ---
+  if (needLoadingAssistance || needUnloadingAssistance) {
+    let type = '';
+    if (needLoadingAssistance && needUnloadingAssistance) type = 'both';
+    else if (needLoadingAssistance) type = 'loading';
+    else if (needUnloadingAssistance) type = 'unloading';
+    
+    await LabourRequest.create({
+      booking: booking._id,
+      type,
+      numberOfLabourers: 1,   // default; you could extend the booking form to capture this
+      hours: 1,               // default
+      status: 'pending'
+    });
+  }
 
   // 201 Created status code for successful resource creation
   res.status(201).json(booking);
