@@ -3,7 +3,7 @@ const router = express.Router();
 const Booking = require('../models/Booking');
 const mongoose = require('mongoose');
 const { protect, authorize } = require('../middleware/auth');
-const LabourRequest = require('../models/LabourRequest');
+const LabourRequest = require('../models/LabourRequests');
 // Create a booking (client only)
 // Only authenticated clients can create a booking
 router.post('/', protect, authorize('client'), async (req, res) => {
