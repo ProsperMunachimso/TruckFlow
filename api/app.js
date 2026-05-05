@@ -13,9 +13,11 @@ mongoose.connect(process.env.MONGODB_URI)
   .catch(err => console.log('MongoDB connection error:', err));
 
 app.use(cors({
-  origin: 'http://localhost:3000',   // your React dev server
+  origin:[ 'http://localhost:3000', 
+    'https://truckflow-frontend.onrender.com'],  // your React dev server
   credentials: true,
 }))
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
